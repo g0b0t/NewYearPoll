@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/AKfycbwWuji3cB9VnUEn4RMrRrOQ_4pYNOjryj70CNVn0X2sLhEw_3quEXJD3h6oPCG10uVTdA/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxifiDuwg7vqVT7pSzQpZRLYS0hpi-4Pb4Uveer7TvpmiJTTpfj2fmEL3FcGLrER49zug/exec';
 
 // Elements
 const surveySection = document.getElementById('survey');
