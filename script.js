@@ -24,37 +24,37 @@ const selectableGroups = {
 };
 
 const alcoholLevelMap = {
-  0: 'No booze tonight',
-  1: 'Soft buzz',
-  2: 'Happy clink',
-  3: 'Legendary toast'
+  0: 'Сегодня без алкоголя',
+  1: 'Лёгкий вайб',
+  2: 'Тёплый чок',
+  3: 'Тосты от души'
 };
 
 const personaRules = [
   {
-    match: data => data.selectedFoods.includes('Rolls / Sushi'),
-    title: 'Rolls Romantic',
-    description: 'You appreciate delicate rolls and chill vibes. Expect soy sauce jokes at the table.'
+    match: data => data.selectedFoods.includes('Роллы / Суши'),
+    title: 'Ролл-романтик',
+    description: 'Любишь нежные роллы и спокойный вайб. Соевый соус и лайтовые шутки гарантированы.'
   },
   {
-    match: data => data.selectedFoods.includes('Shashlik / BBQ'),
-    title: 'BBQ Warrior',
-    description: 'You were born with grill tongs in hand. Smoke and good stories follow you.'
+    match: data => data.selectedFoods.includes('Шашлык / BBQ'),
+    title: 'Гриль-воин',
+    description: 'Родился с щипцами для мяса. Вокруг дымок и самые вкусные истории.'
   },
   {
-    match: data => data.selectedFoods.includes('Olivier salad'),
-    title: 'Olivier Samurai',
-    description: 'Traditional, legendary, unstoppable. You know where the salad bowl is at all times.'
+    match: data => data.selectedFoods.includes('Салат Оливье'),
+    title: 'Самурай Оливье',
+    description: 'Классика, легенда, неостановимый. Всегда знаешь, где миска с салатом.'
   },
   {
-    match: data => data.selectedFoods.includes('Home-baked sweets'),
-    title: 'Cookie Bard',
-    description: 'Shows up with homemade desserts and compliments. Sugar rush and soft playlists included.'
+    match: data => data.selectedFoods.includes('Домашняя выпечка'),
+    title: 'Печенюшный бард',
+    description: 'Приходит с домашними десертами и комплиментами. Сахарный прилив и мягкий плейлист в комплекте.'
   },
   {
     match: data => data.alcoholLevel === 0,
-    title: 'Sober Sparkler',
-    description: 'You bring board games, playlists, and a steady hand for sparklers.'
+    title: 'Трезвый искромёт',
+    description: 'Привезёшь настолки, плейлисты и уверенно крутишь бенгальские огни.'
   }
 ];
 
@@ -87,11 +87,11 @@ function setScreen(screen) {
 function validateForm() {
   const selectedFoods = getSelectedValues(selectableGroups.food);
   if (!nameInput.value.trim()) {
-    formStatus.textContent = 'Please add your nickname or name.';
+    formStatus.textContent = 'Добавь ник или имя.';
     return false;
   }
   if (selectedFoods.length === 0) {
-    formStatus.textContent = 'Pick at least one food to claim your spot.';
+    formStatus.textContent = 'Выбери хотя бы одну закуску, чтобы застолбить место.';
     return false;
   }
   formStatus.textContent = '';
@@ -108,7 +108,7 @@ async function submitForm() {
     timestamp: new Date().toISOString()
   };
 
-  formStatus.textContent = 'Sending your wishes...';
+  formStatus.textContent = 'Отправляем твои пожелания...';
   submitBtn.disabled = true;
 
   try {
@@ -127,7 +127,7 @@ async function submitForm() {
     formStatus.textContent = '';
   } catch (error) {
     console.error(error);
-    formStatus.textContent = 'Oops! Could not send the form. Please try again.';
+    formStatus.textContent = 'Упс! Не удалось отправить форму. Попробуй ещё раз.';
   } finally {
     submitBtn.disabled = false;
   }
@@ -142,11 +142,11 @@ function showPersona(data) {
   }
 
   if (data.alcoholLevel >= 3) {
-    personaTitle.textContent = 'Toastmaster Deluxe';
-    personaDescription.textContent = 'You will absolutely hijack the playlist and run the countdown.';
+    personaTitle.textContent = 'Тамада-профи';
+    personaDescription.textContent = 'Определённо захватишь плейлист и возьмёшь таймер в свои руки.';
   } else {
-    personaTitle.textContent = 'Festive Hero';
-    personaDescription.textContent = 'Balanced tastes, balanced vibes. The party bends to your mood!';
+    personaTitle.textContent = 'Праздничный герой';
+    personaDescription.textContent = 'Сбалансированные вкусы и настроение. Вечеринка подстраивается под тебя!';
   }
 }
 
@@ -154,7 +154,7 @@ function renderStats(container, statsObj, total) {
   container.innerHTML = '';
   const entries = Object.entries(statsObj || {});
   if (entries.length === 0) {
-    container.innerHTML = '<p class="muted">No data yet.</p>';
+    container.innerHTML = '<p class="muted">Данных пока нет.</p>';
     return;
   }
 
@@ -175,7 +175,7 @@ function renderStats(container, statsObj, total) {
 }
 
 async function loadAdminStats() {
-  adminStatus.textContent = 'Loading stats...';
+  adminStatus.textContent = 'Загружаем статистику...';
   foodStats.innerHTML = '';
   vibeStats.innerHTML = '';
 
@@ -187,15 +187,15 @@ async function loadAdminStats() {
     renderStats(foodStats, data.foods, data.totalResponses);
 
     const vibeCounts = Object.entries(data.alcoholLevels || {}).reduce((acc, [level, count]) => {
-      const label = alcoholLevelMap[level] || `Level ${level}`;
+      const label = alcoholLevelMap[level] || `Уровень ${level}`;
       acc[label] = count;
       return acc;
     }, {});
     renderStats(vibeStats, vibeCounts, data.totalResponses);
-    adminStatus.textContent = data.totalResponses ? `${data.totalResponses} responses` : 'No responses yet';
+    adminStatus.textContent = data.totalResponses ? `${data.totalResponses} ответов` : 'Ответов пока нет';
   } catch (error) {
     console.error(error);
-    adminStatus.textContent = 'Could not load stats. Please refresh or check the Apps Script deployment.';
+    adminStatus.textContent = 'Не удалось загрузить статистику. Обнови страницу или проверь Apps Script.';
   }
 }
 
