@@ -1,19 +1,15 @@
 const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';
 const SHEET_NAME = 'Responses';
+const TOKEN_SHEET_NAME = 'Tokens';
 
 function doPost(e) {
-  // Для отладки — что реально прилетает
-  Logger.log('doPost event: ' + JSON.stringify(e));
-
+  // Разбор тела запроса
   let raw = '';
 
-  // 1) Если тело пришло как text/plain / application/json
   if (e.postData && e.postData.contents) {
-    raw = e.postData.contents;
-  }
-  // 2) Если отправляли как form-urlencoded: data=...
-  if (!raw && e.parameter && e.parameter.data) {
-    raw = e.parameter.data;
+    raw = e.postData.contents; // text/plain или application/json
+  } else if (e.parameter && e.parameter.data) {
+    raw = e.parameter.data; // вариант с form-urlencoded
   }
 
   let data = {};
@@ -21,23 +17,90 @@ function doPost(e) {
     data = raw ? JSON.parse(raw) : {};
   } catch (err) {
     Logger.log('JSON parse error: ' + err + ' | raw=' + raw);
-    data = {};
+    return buildJsonResponse({
+      status: 'error',
+      code: 'BAD_JSON',
+      message: 'Некорректные данные запроса'
+    });
   }
 
-  const sheet =
-    SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME) ||
-    SpreadsheetApp.openById(SHEET_ID).insertSheet(SHEET_NAME);
+  const token = (data.token || '').trim();
 
-  sheet.appendRow([
+  // 1. Проверяем, что токен есть
+  if (!token) {
+    return buildJsonResponse({
+      status: 'error',
+      code: 'NO_TOKEN',
+      message: 'Нет токена доступа. Обратись к организатору.'
+    });
+  }
+
+  // 2. Ищем токен в листе Tokens
+  const tokenInfo = findTokenRow(token);
+  if (!tokenInfo) {
+    return buildJsonResponse({
+      status: 'error',
+      code: 'TOKEN_NOT_FOUND',
+      message: 'Неверная ссылка или токен. Обратись к организатору.'
+    });
+  }
+
+  const rowValues = tokenInfo.values;
+  const usedFlag = rowValues[2]; // колонка C: used
+
+  // 3. Уже использован?
+  if (usedFlag === true || usedFlag === 'TRUE' || usedFlag === 'Да') {
+    return buildJsonResponse({
+      status: 'error',
+      code: 'TOKEN_USED',
+      message: 'По этой ссылке уже был отправлен ответ.'
+    });
+  }
+
+  // 4. Пишем ответ в Responses
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const respSheet =
+    ss.getSheetByName(RESPONSES_SHEET_NAME) ||
+    ss.insertSheet(RESPONSES_SHEET_NAME);
+
+  const row = [
     new Date(),
     data.name || '',
     (data.selectedFoods || []).join(', '),
-    (data.alcoholLevel !== undefined && data.alcoholLevel !== null)
-      ? data.alcoholLevel
-      : ''
-  ]);
+    data.alcoholLevel,
+    token // можно сохранить, чтобы всегда знать, чей ответ
+  ];
+
+  respSheet.appendRow(row);
+
+  // 5. Помечаем токен как использованный
+  tokenInfo.sheet.getRange(tokenInfo.rowIndex, 3).setValue(true); // колонка C = TRUE
 
   return buildJsonResponse({ status: 'ok' });
+}
+
+function findTokenRow(token) {
+  if (!token) return null;
+
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName(TOKEN_SHEET_NAME);
+  if (!sheet) return null;
+
+  const values = sheet.getDataRange().getValues(); // вся таблица
+  // Предполагаем заголовки в первой строке
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    const rowToken = row[0]; // колонка A: token
+    if (rowToken === token) {
+      return {
+        sheet,
+        rowIndex: i + 1,   // номер строки в таблице
+        values: row        // [token, name, used]
+      };
+    }
+  }
+
+  return null;
 }
 
 

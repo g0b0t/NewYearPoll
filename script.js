@@ -1,5 +1,9 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/AKfycbyp9Edsi446Keho7pHyc7PojSxULXhACkK3S5qbBUoNU0lodrC8o68Ht5fHusRiwEPe/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbw8mbzjrHc6VZIQNNdMqSZGwyq2nXVMDW_hANc2tU24iUIAcnAQ9ADCcCAOc9rBCGDEsA/exec';
+
+// Читаем токен из URL (?token=...)
+const urlParams = new URLSearchParams(window.location.search);
+const participantToken = urlParams.get('token');
 
 // Elements
 const surveySection = document.getElementById('survey');
@@ -23,6 +27,7 @@ const vibeStats = document.getElementById('vibeStats');
 const stepIndicator = document.getElementById('stepIndicator');
 const stepperItems = document.querySelectorAll('.stepper__item');
 const formSteps = document.querySelectorAll('.form-step');
+const tokenWarning = document.getElementById('tokenWarning');
 
 const statusByStep = {
   1: formStatus,
@@ -162,6 +167,12 @@ function validateForm() {
 }
 
 async function submitForm() {
+
+  if (!participantToken) {
+    showStatus(1, 'У тебя нет специальной ссылки. Попроси организатора прислать персональный адрес с токеном.');
+    return;
+  }
+
   if (!validateForm()) return;
 
   const payload = {
@@ -186,7 +197,11 @@ async function submitForm() {
 
     if (!response.ok) throw new Error('Network error');
     const data = await response.json();
-    if (data.status !== 'ok') throw new Error('Server returned an error');
+    if (data.status !== 'ok') {
+      const msg = data.message || 'Ошибка на сервере. Попробуй ещё раз.';
+      showStatus(3, msg);
+      return;
+    }
 
     showPersona(payload);
     setScreen('result');
@@ -278,6 +293,19 @@ function init() {
   updateSliderLabels();
   handleHashRouting();
   updateStepUI();
+
+  // Если нет токена и это не админ-режим — сразу блокируем
+  if (!participantToken && location.hash !== '#admin') {
+    if (startBtn) {
+      startBtn.disabled = true;
+      startBtn.textContent = 'Нет доступа к опросу';
+    }
+    if (tokenWarning) {
+      tokenWarning.classList.remove('hidden');
+      tokenWarning.textContent =
+        'У тебя нет персональной ссылки для участия в опросе. Обратись к администратору/организатору, чтобы он выслал правильный адрес.';
+    }
+  }
 
   startBtn?.addEventListener('click', () => {
     setScreen('survey');
