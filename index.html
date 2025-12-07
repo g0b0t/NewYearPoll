@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Year Party Food Survey</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="hero__eyebrow">New Year · 10–12 besties</p>
+      <h1>Party Snacks & Vibes Board</h1>
+      <p class="hero__tagline">Tap your favorite bites, slide your party vibe, and get a goofy persona.</p>
+      <div class="hero__actions">
+        <button class="btn primary" id="startBtn">Dive in</button>
+        <a class="btn ghost" href="#admin">See the group picks</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="survey" class="panel hidden" aria-labelledby="surveyTitle">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Step 1</p>
+          <h2 id="surveyTitle">Claim your favorite bites</h2>
+          <p class="muted">Tap a few cards. This is only for our tiny crew, so have fun with it.</p>
+        </div>
+      </div>
+
+      <div class="grid two-col">
+        <div class="card-block" aria-labelledby="foodTitle">
+          <div class="card-block__header">
+            <h3 id="foodTitle">Food</h3>
+            <p class="muted">Pick one or more</p>
+          </div>
+          <div class="chip-grid" id="foodOptions">
+            <button class="chip" data-value="Olivier salad">🥗 Olivier salad</button>
+            <button class="chip" data-value="Shashlik / BBQ">🔥 Shashlik / BBQ</button>
+            <button class="chip" data-value="Rolls / Sushi">🍣 Rolls / Sushi</button>
+            <button class="chip" data-value="Snacks & finger food">🧀 Snacks & finger food</button>
+            <button class="chip" data-value="Home-baked sweets">🍪 Home-baked sweets</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid two-col">
+        <div class="card-block" aria-labelledby="alcoholLevelTitle">
+          <div class="card-block__header">
+            <h3 id="alcoholLevelTitle">Party vibe</h3>
+            <p class="muted">How wild is your glass?</p>
+          </div>
+          <div class="slider-block">
+            <label class="slider-label" for="alcoholLevel">Level: <span id="alcoholLevelLabel">Chill</span></label>
+            <input type="range" id="alcoholLevel" min="0" max="3" value="2" step="1">
+            <div class="slider-notes">
+              <span>0 – No alcohol</span>
+              <span>1 – A little</span>
+              <span>2 – Normal</span>
+              <span>3 – From the heart</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block" aria-labelledby="nameTitle">
+        <div class="card-block__header">
+          <h3 id="nameTitle">Who is answering?</h3>
+          <p class="muted">Nickname or name — whatever your squad will recognize</p>
+        </div>
+        <input id="nameInput" type="text" placeholder="e.g. Frosty Fox" required>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="submitBtn">Submit my wish</button>
+        <p class="muted" id="formStatus" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="result" class="panel hidden" aria-live="polite">
+      <div class="result-card">
+        <p class="eyebrow">You are...</p>
+        <h2 id="personaTitle">The Festive Hero</h2>
+        <p id="personaDescription" class="muted">Your choices are legendary. Thank you for sending your preferences!</p>
+        <button class="btn" id="backToSurvey">Back to survey</button>
+      </div>
+    </section>
+
+    <section id="admin" class="panel hidden" aria-labelledby="adminTitle">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Organizer view</p>
+          <h2 id="adminTitle">Live snackboard</h2>
+          <p class="muted">Group picks for our cosy 10–12 crew.</p>
+        </div>
+        <button class="btn" id="backToMain">Back to survey</button>
+      </div>
+
+      <div id="adminStatus" class="muted" role="status" aria-live="polite"></div>
+
+      <div class="stats-grid">
+        <div>
+          <h3>Foods</h3>
+          <div id="foodStats" class="stat-list"></div>
+        </div>
+        <div>
+          <h3>Party vibe</h3>
+          <div id="vibeStats" class="stat-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built for our cosy New Year hangout · Hosted on GitHub Pages · Powered by Google Apps Script</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
