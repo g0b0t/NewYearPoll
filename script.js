@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/AKfycby-BBCeOcJ30XyAyR774QMd62FpufctSuGsoExnMpeNVDmlrIT1MiSwJn4g5xXZnypA7Q/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyftq9ZAUOmNPY_CJMdWBEJCMRQjSwbypidd0OEOK44Ecv9FcVRQggnUMUL_iVGd4tXkA/exec';
 
 // Читаем токен из URL (?token=...)
 const urlParams = new URLSearchParams(window.location.search);
@@ -168,7 +168,6 @@ function validateForm() {
 }
 
 async function submitForm() {
-
   if (!participantToken) {
     showStatus(3, 'У этой ссылки нет токена. Попроси организатора прислать персональную ссылку.');
     return;
@@ -188,24 +187,16 @@ async function submitForm() {
   submitBtn.disabled = true;
 
   try {
-    const response = await fetch(API_URL, {
+    await fetch(API_URL, {
       method: 'POST',
-      redirect: 'follow',
+      mode: 'no-cors',                     // <-- ключевой момент
       headers: {
-        // такой Content-Type не триггерит CORS preflight у Apps Script
         'Content-Type': 'text/plain;charset=utf-8'
       },
       body: JSON.stringify(payload)
     });
 
-    if (!response.ok) throw new Error('Network error');
-    const data = await response.json();
-    if (data.status !== 'ok') {
-      const msg = data.message || 'Ошибка на сервере. Попробуй ещё раз.';
-      showStatus(3, msg);
-      return;
-    }
-
+    // Если до сюда дошли без сетевой ошибки — считаем, что всё ок
     showPersona(payload);
     setScreen('result');
     showStatus(3, '');
@@ -216,6 +207,7 @@ async function submitForm() {
     submitBtn.disabled = false;
   }
 }
+
 
 function showPersona(data) {
   const rule = personaRules.find(item => item.match(data));

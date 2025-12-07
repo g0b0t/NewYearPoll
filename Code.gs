@@ -60,8 +60,8 @@ function doPost(e) {
   // 4. Пишем ответ в Responses
   const ss = SpreadsheetApp.openById(SHEET_ID);
   const respSheet =
-    ss.getSheetByName(RESPONSES_SHEET_NAME) ||
-    ss.insertSheet(RESPONSES_SHEET_NAME);
+    ss.getSheetByName(SHEET_NAME) ||
+    ss.insertSheet(SHEET_NAME);
 
   const row = [
     new Date(),
