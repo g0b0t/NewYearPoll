@@ -14,6 +14,7 @@ const startBtn = document.getElementById('startBtn');
 const submitBtn = document.getElementById('submitBtn');
 const backToSurveyBtn = document.getElementById('backToSurvey');
 const backToMainBtn = document.getElementById('backToMain');
+const heroContent = document.querySelector('.hero__content');
 const formStatus = document.getElementById('formStatus');
 const formStatusStep2 = document.getElementById('formStatusStep2');
 const formStatusStep3 = document.getElementById('formStatusStep3');
@@ -22,6 +23,7 @@ const alcoholLevel = document.getElementById('alcoholLevel');
 const alcoholLevelLabel = document.getElementById('alcoholLevelLabel');
 const personaTitle = document.getElementById('personaTitle');
 const personaDescription = document.getElementById('personaDescription');
+const resultNote = document.getElementById('resultNote');
 const adminStatus = document.getElementById('adminStatus');
 const foodStats = document.getElementById('foodStats');
 const vibeStats = document.getElementById('vibeStats');
@@ -99,6 +101,10 @@ function setScreen(screen) {
   resultSection.classList.add('hidden');
   adminSection.classList.add('hidden');
 
+  if (heroContent) {
+    heroContent.classList.toggle('hidden', screen === 'result');
+  }
+
   if (screen === 'survey') surveySection.classList.remove('hidden');
   if (screen === 'result') resultSection.classList.remove('hidden');
   if (screen === 'admin') adminSection.classList.remove('hidden');
@@ -108,6 +114,22 @@ function clearStatuses() {
   Object.values(statusByStep).forEach(el => {
     if (el) el.textContent = '';
   });
+}
+
+function disableResubmission() {
+  if (startBtn) {
+    startBtn.disabled = true;
+    startBtn.classList.add('hidden');
+  }
+
+  if (backToSurveyBtn) {
+    backToSurveyBtn.disabled = true;
+    backToSurveyBtn.classList.add('hidden');
+  }
+
+  if (resultNote) {
+    resultNote.classList.remove('hidden');
+  }
 }
 
 function updateStepUI() {
@@ -199,6 +221,7 @@ async function submitForm() {
     // Если до сюда дошли без сетевой ошибки — считаем, что всё ок
     showPersona(payload);
     setScreen('result');
+    disableResubmission();
     showStatus(3, '');
   } catch (error) {
     console.error(error);
