@@ -42,10 +42,16 @@ function doGet() {
   });
 }
 
+function doOptions() {
+  // Handle CORS preflight so fetch() from GitHub Pages/local works without errors.
+  return buildJsonResponse({ status: 'ok' });
+}
+
 function buildJsonResponse(payload) {
   return ContentService
     .createTextOutput(JSON.stringify(payload))
     .setMimeType(ContentService.MimeType.JSON)
     .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET,POST');
+    .setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
