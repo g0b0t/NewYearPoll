@@ -1,4 +1,4 @@
-const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';
+const SHEET_ID = '1sltem8343hRTN_95UWXQeb56C9RCFdnNZOPGRTHissc';
 const SHEET_NAME = 'Responses';
 
 function doPost(e) {
