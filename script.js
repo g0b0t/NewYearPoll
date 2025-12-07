@@ -4,6 +4,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbw8mbzjrHc6VZIQNNdMqSZG
 // Читаем токен из URL (?token=...)
 const urlParams = new URLSearchParams(window.location.search);
 const participantToken = urlParams.get('token');
+console.log('participantToken =', participantToken);
 
 // Elements
 const surveySection = document.getElementById('survey');
@@ -169,7 +170,7 @@ function validateForm() {
 async function submitForm() {
 
   if (!participantToken) {
-    showStatus(1, 'У тебя нет специальной ссылки. Попроси организатора прислать персональный адрес с токеном.');
+    showStatus(3, 'У этой ссылки нет токена. Попроси организатора прислать персональную ссылку.');
     return;
   }
 
@@ -179,7 +180,8 @@ async function submitForm() {
     name: nameInput.value.trim(),
     selectedFoods: getSelectedValues(selectableGroups.food),
     alcoholLevel: Number(alcoholLevel.value),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    token: participantToken
   };
 
   showStatus(3, 'Отправляем твои пожелания...');
@@ -190,6 +192,7 @@ async function submitForm() {
       method: 'POST',
       redirect: 'follow',
       headers: {
+        // такой Content-Type не триггерит CORS preflight у Apps Script
         'Content-Type': 'text/plain;charset=utf-8'
       },
       body: JSON.stringify(payload)
