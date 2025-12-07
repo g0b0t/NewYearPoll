@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/AKfycbw8mbzjrHc6VZIQNNdMqSZGwyq2nXVMDW_hANc2tU24iUIAcnAQ9ADCcCAOc9rBCGDEsA/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycby-BBCeOcJ30XyAyR774QMd62FpufctSuGsoExnMpeNVDmlrIT1MiSwJn4g5xXZnypA7Q/exec';
 
 // Читаем токен из URL (?token=...)
 const urlParams = new URLSearchParams(window.location.search);
