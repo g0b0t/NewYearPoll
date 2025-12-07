@@ -10,10 +10,7 @@ function doPost(e) {
     new Date(),
     data.name,
     (data.selectedFoods || []).join(', '),
-    (data.selectedDrinks || []).join(', '),
-    data.foodAmountLevel,
-    data.alcoholLevel,
-    (data.restrictions || []).join(', ')
+    data.alcoholLevel
   ]);
 
   return buildJsonResponse({ status: 'ok' });
@@ -22,25 +19,25 @@ function doPost(e) {
 function doGet() {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   if (!sheet) {
-    return buildJsonResponse({ foods: {}, drinks: {}, restrictions: {}, totalResponses: 0 });
+    return buildJsonResponse({ foods: {}, alcoholLevels: {}, totalResponses: 0 });
   }
 
   const rows = sheet.getDataRange().getValues();
   const foods = {};
-  const drinks = {};
-  const restrictions = {};
+  const alcoholLevels = {};
 
   rows.slice(1).forEach(row => {
-    const [timestamp, name, foodStr, drinkStr, foodLevel, alcoholLevel, restrictionStr] = row;
+    const [timestamp, name, foodStr, alcoholLevel] = row;
     (foodStr || '').split(/,\s*/).filter(Boolean).forEach(item => foods[item] = (foods[item] || 0) + 1);
-    (drinkStr || '').split(/,\s*/).filter(Boolean).forEach(item => drinks[item] = (drinks[item] || 0) + 1);
-    (restrictionStr || '').split(/,\s*/).filter(Boolean).forEach(item => restrictions[item] = (restrictions[item] || 0) + 1);
+    const levelKey = alcoholLevel !== undefined && alcoholLevel !== '' ? String(alcoholLevel) : null;
+    if (levelKey !== null) {
+      alcoholLevels[levelKey] = (alcoholLevels[levelKey] || 0) + 1;
+    }
   });
 
   return buildJsonResponse({
     foods,
-    drinks,
-    restrictions,
+    alcoholLevels,
     totalResponses: Math.max(rows.length - 1, 0)
   });
 }

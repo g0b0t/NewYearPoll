@@ -9,12 +9,12 @@
 <body>
   <header class="hero">
     <div class="hero__content">
-      <p class="hero__eyebrow">2024 · Corporate Celebration</p>
-      <h1>New Year Party Food Survey</h1>
-      <p class="hero__tagline">Choose what you want to eat and drink and get a fun food persona!</p>
+      <p class="hero__eyebrow">New Year · 10–12 besties</p>
+      <h1>Party Snacks & Vibes Board</h1>
+      <p class="hero__tagline">Tap your favorite bites, slide your party vibe, and get a goofy persona.</p>
       <div class="hero__actions">
-        <button class="btn primary" id="startBtn">Start picking</button>
-        <a class="btn ghost" href="#admin">View admin summary</a>
+        <button class="btn primary" id="startBtn">Dive in</button>
+        <a class="btn ghost" href="#admin">See the group picks</a>
       </div>
     </div>
   </header>
@@ -24,8 +24,8 @@
       <div class="panel__header">
         <div>
           <p class="eyebrow">Step 1</p>
-          <h2 id="surveyTitle">Tell us your festive cravings</h2>
-          <p class="muted">Tap the cards to choose your food & drinks. You can mix and match.</p>
+          <h2 id="surveyTitle">Claim your favorite bites</h2>
+          <p class="muted">Tap a few cards. This is only for our tiny crew, so have fun with it.</p>
         </div>
       </div>
 
@@ -40,47 +40,19 @@
             <button class="chip" data-value="Shashlik / BBQ">🔥 Shashlik / BBQ</button>
             <button class="chip" data-value="Rolls / Sushi">🍣 Rolls / Sushi</button>
             <button class="chip" data-value="Snacks & finger food">🧀 Snacks & finger food</button>
-          </div>
-        </div>
-
-        <div class="card-block" aria-labelledby="drinkTitle">
-          <div class="card-block__header">
-            <h3 id="drinkTitle">Drinks</h3>
-            <p class="muted">Pick one or more</p>
-          </div>
-          <div class="chip-grid" id="drinkOptions">
-            <button class="chip" data-value="Beer">🍺 Beer</button>
-            <button class="chip" data-value="Wine">🍷 Wine</button>
-            <button class="chip" data-value="Strong alcohol">🥃 Strong alcohol</button>
-            <button class="chip" data-value="Non-alcoholic drinks">🥤 Non-alcoholic drinks</button>
+            <button class="chip" data-value="Home-baked sweets">🍪 Home-baked sweets</button>
           </div>
         </div>
       </div>
 
       <div class="grid two-col">
-        <div class="card-block" aria-labelledby="foodAmountTitle">
-          <div class="card-block__header">
-            <h3 id="foodAmountTitle">Food amount</h3>
-            <p class="muted">How hungry will you be?</p>
-          </div>
-          <div class="slider-block">
-            <label class="slider-label" for="foodAmount">Level: <span id="foodAmountLabel">Normal</span></label>
-            <input type="range" id="foodAmount" min="1" max="3" value="2" step="1">
-            <div class="slider-notes">
-              <span>1 – Light snack</span>
-              <span>2 – Normal</span>
-              <span>3 – Bring a big bowl</span>
-            </div>
-          </div>
-        </div>
-
         <div class="card-block" aria-labelledby="alcoholLevelTitle">
           <div class="card-block__header">
-            <h3 id="alcoholLevelTitle">Alcohol level</h3>
-            <p class="muted">What’s your vibe?</p>
+            <h3 id="alcoholLevelTitle">Party vibe</h3>
+            <p class="muted">How wild is your glass?</p>
           </div>
           <div class="slider-block">
-            <label class="slider-label" for="alcoholLevel">Level: <span id="alcoholLevelLabel">Normal</span></label>
+            <label class="slider-label" for="alcoholLevel">Level: <span id="alcoholLevelLabel">Chill</span></label>
             <input type="range" id="alcoholLevel" min="0" max="3" value="2" step="1">
             <div class="slider-notes">
               <span>0 – No alcohol</span>
@@ -92,23 +64,10 @@
         </div>
       </div>
 
-      <div class="card-block" aria-labelledby="restrictionsTitle">
-        <div class="card-block__header">
-          <h3 id="restrictionsTitle">Restrictions</h3>
-          <p class="muted">Tap to toggle what we should care about</p>
-        </div>
-        <div class="chip-grid" id="restrictions">
-          <button class="chip outline" data-value="Vegan">🌱 Vegan</button>
-          <button class="chip outline" data-value="No pork">🐖 No pork</button>
-          <button class="chip outline" data-value="Dairy-free">🥛 No lactose / dairy-free</button>
-          <button class="chip outline" data-value="No alcohol">🚫 No alcohol</button>
-        </div>
-      </div>
-
       <div class="card-block" aria-labelledby="nameTitle">
         <div class="card-block__header">
           <h3 id="nameTitle">Who is answering?</h3>
-          <p class="muted">Nickname or name — whatever your team will recognize</p>
+          <p class="muted">Nickname or name — whatever your squad will recognize</p>
         </div>
         <input id="nameInput" type="text" placeholder="e.g. Frosty Fox" required>
       </div>
@@ -132,8 +91,8 @@
       <div class="panel__header">
         <div>
           <p class="eyebrow">Organizer view</p>
-          <h2 id="adminTitle">Live summary</h2>
-          <p class="muted">Aggregated counts from the Google Sheet.</p>
+          <h2 id="adminTitle">Live snackboard</h2>
+          <p class="muted">Group picks for our cosy 10–12 crew.</p>
         </div>
         <button class="btn" id="backToMain">Back to survey</button>
       </div>
@@ -146,19 +105,15 @@
           <div id="foodStats" class="stat-list"></div>
         </div>
         <div>
-          <h3>Drinks</h3>
-          <div id="drinkStats" class="stat-list"></div>
-        </div>
-        <div>
-          <h3>Restrictions</h3>
-          <div id="restrictionStats" class="stat-list"></div>
+          <h3>Party vibe</h3>
+          <div id="vibeStats" class="stat-list"></div>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>Built for the New Year corporate party · Hosted on GitHub Pages · Powered by Google Apps Script</p>
+    <p>Built for our cosy New Year hangout · Hosted on GitHub Pages · Powered by Google Apps Script</p>
   </footer>
 
   <script src="script.js"></script>

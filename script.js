@@ -11,34 +11,23 @@ const backToSurveyBtn = document.getElementById('backToSurvey');
 const backToMainBtn = document.getElementById('backToMain');
 const formStatus = document.getElementById('formStatus');
 const nameInput = document.getElementById('nameInput');
-const foodAmount = document.getElementById('foodAmount');
 const alcoholLevel = document.getElementById('alcoholLevel');
-const foodAmountLabel = document.getElementById('foodAmountLabel');
 const alcoholLevelLabel = document.getElementById('alcoholLevelLabel');
 const personaTitle = document.getElementById('personaTitle');
 const personaDescription = document.getElementById('personaDescription');
 const adminStatus = document.getElementById('adminStatus');
 const foodStats = document.getElementById('foodStats');
-const drinkStats = document.getElementById('drinkStats');
-const restrictionStats = document.getElementById('restrictionStats');
+const vibeStats = document.getElementById('vibeStats');
 
 const selectableGroups = {
-  food: document.querySelectorAll('#foodOptions .chip'),
-  drink: document.querySelectorAll('#drinkOptions .chip'),
-  restrictions: document.querySelectorAll('#restrictions .chip')
-};
-
-const foodAmountMap = {
-  1: 'Light snack',
-  2: 'Normal',
-  3: 'Bring a big bowl'
+  food: document.querySelectorAll('#foodOptions .chip')
 };
 
 const alcoholLevelMap = {
-  0: 'No alcohol',
-  1: 'A little',
-  2: 'Normal',
-  3: 'From the heart'
+  0: 'No booze tonight',
+  1: 'Soft buzz',
+  2: 'Happy clink',
+  3: 'Legendary toast'
 };
 
 const personaRules = [
@@ -58,14 +47,18 @@ const personaRules = [
     description: 'Traditional, legendary, unstoppable. You know where the salad bowl is at all times.'
   },
   {
-    match: data => data.selectedDrinks.includes('Non-alcoholic drinks') && data.alcoholLevel === 0,
-    title: 'Champagne Introvert',
-    description: 'Sparkling personality without the fizz. You bring the calm to the celebration.'
+    match: data => data.selectedFoods.includes('Home-baked sweets'),
+    title: 'Cookie Bard',
+    description: 'Shows up with homemade desserts and compliments. Sugar rush and soft playlists included.'
+  },
+  {
+    match: data => data.alcoholLevel === 0,
+    title: 'Sober Sparkler',
+    description: 'You bring board games, playlists, and a steady hand for sparklers.'
   }
 ];
 
 function updateSliderLabels() {
-  foodAmountLabel.textContent = foodAmountMap[foodAmount.value];
   alcoholLevelLabel.textContent = alcoholLevelMap[alcoholLevel.value];
 }
 
@@ -93,13 +86,12 @@ function setScreen(screen) {
 
 function validateForm() {
   const selectedFoods = getSelectedValues(selectableGroups.food);
-  const selectedDrinks = getSelectedValues(selectableGroups.drink);
   if (!nameInput.value.trim()) {
     formStatus.textContent = 'Please add your nickname or name.';
     return false;
   }
-  if (selectedFoods.length === 0 && selectedDrinks.length === 0) {
-    formStatus.textContent = 'Pick at least one food or drink option.';
+  if (selectedFoods.length === 0) {
+    formStatus.textContent = 'Pick at least one food to claim your spot.';
     return false;
   }
   formStatus.textContent = '';
@@ -112,10 +104,7 @@ async function submitForm() {
   const payload = {
     name: nameInput.value.trim(),
     selectedFoods: getSelectedValues(selectableGroups.food),
-    selectedDrinks: getSelectedValues(selectableGroups.drink),
-    foodAmountLevel: Number(foodAmount.value),
     alcoholLevel: Number(alcoholLevel.value),
-    restrictions: getSelectedValues(selectableGroups.restrictions),
     timestamp: new Date().toISOString()
   };
 
@@ -152,12 +141,9 @@ function showPersona(data) {
     return;
   }
 
-  if (data.selectedDrinks.includes('Strong alcohol') && data.alcoholLevel >= 2) {
-    personaTitle.textContent = 'Spirit Adventurer';
-    personaDescription.textContent = 'Fearless with the bar menu and ready for karaoke.';
-  } else if (data.restrictions.includes('Vegan')) {
-    personaTitle.textContent = 'Green Guardian';
-    personaDescription.textContent = 'Protector of plants and bringer of colorful plates.';
+  if (data.alcoholLevel >= 3) {
+    personaTitle.textContent = 'Toastmaster Deluxe';
+    personaDescription.textContent = 'You will absolutely hijack the playlist and run the countdown.';
   } else {
     personaTitle.textContent = 'Festive Hero';
     personaDescription.textContent = 'Balanced tastes, balanced vibes. The party bends to your mood!';
@@ -191,8 +177,7 @@ function renderStats(container, statsObj, total) {
 async function loadAdminStats() {
   adminStatus.textContent = 'Loading stats...';
   foodStats.innerHTML = '';
-  drinkStats.innerHTML = '';
-  restrictionStats.innerHTML = '';
+  vibeStats.innerHTML = '';
 
   try {
     const response = await fetch(API_URL);
@@ -200,8 +185,13 @@ async function loadAdminStats() {
     const data = await response.json();
 
     renderStats(foodStats, data.foods, data.totalResponses);
-    renderStats(drinkStats, data.drinks, data.totalResponses);
-    renderStats(restrictionStats, data.restrictions, data.totalResponses);
+
+    const vibeCounts = Object.entries(data.alcoholLevels || {}).reduce((acc, [level, count]) => {
+      const label = alcoholLevelMap[level] || `Level ${level}`;
+      acc[label] = count;
+      return acc;
+    }, {});
+    renderStats(vibeStats, vibeCounts, data.totalResponses);
     adminStatus.textContent = data.totalResponses ? `${data.totalResponses} responses` : 'No responses yet';
   } catch (error) {
     console.error(error);
@@ -230,12 +220,9 @@ function init() {
   });
   submitBtn?.addEventListener('click', submitForm);
 
-  foodAmount.addEventListener('input', updateSliderLabels);
   alcoholLevel.addEventListener('input', updateSliderLabels);
 
   selectableGroups.food.forEach(btn => btn.addEventListener('click', toggleCard));
-  selectableGroups.drink.forEach(btn => btn.addEventListener('click', toggleCard));
-  selectableGroups.restrictions.forEach(btn => btn.addEventListener('click', toggleCard));
 
   window.addEventListener('hashchange', handleHashRouting);
 }
