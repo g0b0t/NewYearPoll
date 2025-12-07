@@ -14,6 +14,7 @@ const startBtn = document.getElementById('startBtn');
 const submitBtn = document.getElementById('submitBtn');
 const backToSurveyBtn = document.getElementById('backToSurvey');
 const backToMainBtn = document.getElementById('backToMain');
+const heroContent = document.querySelector('.hero__content');
 const formStatus = document.getElementById('formStatus');
 const formStatusStep2 = document.getElementById('formStatusStep2');
 const formStatusStep3 = document.getElementById('formStatusStep3');
@@ -99,6 +100,10 @@ function setScreen(screen) {
   surveySection.classList.add('hidden');
   resultSection.classList.add('hidden');
   adminSection.classList.add('hidden');
+
+  if (heroContent) {
+    heroContent.classList.toggle('hidden', screen === 'result');
+  }
 
   if (screen === 'survey') surveySection.classList.remove('hidden');
   if (screen === 'result') resultSection.classList.remove('hidden');
