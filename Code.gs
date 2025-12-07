@@ -2,20 +2,44 @@ const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';
 const SHEET_NAME = 'Responses';
 
 function doPost(e) {
-  const data = JSON.parse(e.parameter.data || '{}');
+  // Для отладки — что реально прилетает
+  Logger.log('doPost event: ' + JSON.stringify(e));
 
-  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME) ||
+  let raw = '';
+
+  // 1) Если тело пришло как text/plain / application/json
+  if (e.postData && e.postData.contents) {
+    raw = e.postData.contents;
+  }
+  // 2) Если отправляли как form-urlencoded: data=...
+  if (!raw && e.parameter && e.parameter.data) {
+    raw = e.parameter.data;
+  }
+
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    Logger.log('JSON parse error: ' + err + ' | raw=' + raw);
+    data = {};
+  }
+
+  const sheet =
+    SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME) ||
     SpreadsheetApp.openById(SHEET_ID).insertSheet(SHEET_NAME);
 
   sheet.appendRow([
     new Date(),
-    data.name,
+    data.name || '',
     (data.selectedFoods || []).join(', '),
-    data.alcoholLevel
+    (data.alcoholLevel !== undefined && data.alcoholLevel !== null)
+      ? data.alcoholLevel
+      : ''
   ]);
 
   return buildJsonResponse({ status: 'ok' });
 }
+
 
 function doGet() {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
