@@ -22,6 +22,7 @@ const alcoholLevel = document.getElementById('alcoholLevel');
 const alcoholLevelLabel = document.getElementById('alcoholLevelLabel');
 const personaTitle = document.getElementById('personaTitle');
 const personaDescription = document.getElementById('personaDescription');
+const resultNote = document.getElementById('resultNote');
 const adminStatus = document.getElementById('adminStatus');
 const foodStats = document.getElementById('foodStats');
 const vibeStats = document.getElementById('vibeStats');
@@ -108,6 +109,22 @@ function clearStatuses() {
   Object.values(statusByStep).forEach(el => {
     if (el) el.textContent = '';
   });
+}
+
+function disableResubmission() {
+  if (startBtn) {
+    startBtn.disabled = true;
+    startBtn.classList.add('hidden');
+  }
+
+  if (backToSurveyBtn) {
+    backToSurveyBtn.disabled = true;
+    backToSurveyBtn.classList.add('hidden');
+  }
+
+  if (resultNote) {
+    resultNote.classList.remove('hidden');
+  }
 }
 
 function updateStepUI() {
@@ -199,6 +216,7 @@ async function submitForm() {
     // Если до сюда дошли без сетевой ошибки — считаем, что всё ок
     showPersona(payload);
     setScreen('result');
+    disableResubmission();
     showStatus(3, '');
   } catch (error) {
     console.error(error);
