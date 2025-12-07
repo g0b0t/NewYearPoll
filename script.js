@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwWuji3cB9VnUEn4RMrRrOQ_4pYNOjryj70CNVn0X2sLhEw_3quEXJD3h6oPCG10uVTdA/exec';
 
 // Elements
 const surveySection = document.getElementById('survey');
