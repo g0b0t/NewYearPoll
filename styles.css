@@ -16,6 +16,10 @@
   box-sizing: border-box;
 }
 
+.hidden {
+  display: none !important;
+}
+
 body {
   margin: 0;
   font-family: 'Manrope', 'Comfortaa', system-ui, -apple-system, sans-serif;
@@ -128,6 +132,59 @@ main {
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 16px;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 10px 0 18px;
+}
+
+.stepper__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+
+.stepper__item.active {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--text);
+  background: linear-gradient(135deg, rgba(252, 211, 77, 0.18), rgba(96, 165, 250, 0.14));
+}
+
+.stepper__item.completed {
+  border-color: rgba(252, 211, 77, 0.6);
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.stepper__dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stepper__item.active .stepper__dot {
+  background: var(--accent);
+  color: #0b0b0b;
+  border-color: transparent;
+}
+
+.form-step {
+  display: block;
 }
 
 .grid.two-col {

@@ -9,11 +9,11 @@
 <body>
   <header class="hero">
     <div class="hero__content">
-      <p class="hero__eyebrow">ПодготовОЧКА к новому году</p>
-      <h1>НГ 2К26 - ПОЖИЛОЙ</h1>
+      <p class="hero__eyebrow">Новый год · наша компания 10–12 друзей</p>
+      <h1>Доска закусок и настроений</h1>
+      <p class="hero__tagline">Отметь любимые закуски, подвигай ползунок настроения и получи смешное прозвище.</p>
       <div class="hero__actions">
         <button class="btn primary" id="startBtn">Поехали</button>
-        <a class="btn ghost" href="#admin">Смотреть выбор команды</a>
       </div>
     </div>
   </header>
@@ -22,58 +22,88 @@
     <section id="survey" class="panel hidden" aria-labelledby="surveyTitle">
       <div class="panel__header">
         <div>
-          <p class="eyebrow">Шаг 1</p>
-          <h2 id="surveyTitle">Выбери закуски</h2>
-          <p class="muted">Нажми на пару карточек. Это только для своей компании, так что не слишком серьёзно.</p>
+          <p class="eyebrow" id="stepIndicator">Шаг 1 из 3</p>
+          <h2 id="surveyTitle">Настраиваем твой выбор</h2>
+          <p class="muted">Сначала представься, затем выбери закуски и настрой настроение.</p>
         </div>
       </div>
 
-      <div class="grid two-col">
-        <div class="card-block" aria-labelledby="foodTitle">
-          <div class="card-block__header">
-            <h3 id="foodTitle">Еда</h3>
-            <p class="muted">Выбери одну или несколько</p>
-          </div>
-          <div class="chip-grid" id="foodOptions">
-            <button class="chip" data-value="Салат Оливье">🥗 Салат Оливье</button>
-            <button class="chip" data-value="Шашлык / BBQ">🔥 Шашлык / BBQ</button>
-            <button class="chip" data-value="Роллы / Суши">🍣 Роллы / Суши</button>
-            <button class="chip" data-value="Снеки и фингерфуд">🧀 Снеки и фингерфуд</button>
-            <button class="chip" data-value="Домашняя выпечка">🍪 Домашняя выпечка</button>
-          </div>
+      <div class="stepper" id="stepper">
+        <div class="stepper__item active" data-step="1">
+          <span class="stepper__dot">1</span>
+          <span class="stepper__label">Имя</span>
+        </div>
+        <div class="stepper__item" data-step="2">
+          <span class="stepper__dot">2</span>
+          <span class="stepper__label">Закуски</span>
+        </div>
+        <div class="stepper__item" data-step="3">
+          <span class="stepper__dot">3</span>
+          <span class="stepper__label">Настрой</span>
         </div>
       </div>
 
-      <div class="grid two-col">
-        <div class="card-block" aria-labelledby="alcoholLevelTitle">
+      <div class="form-step" data-step="1">
+        <div class="card-block" aria-labelledby="nameTitle">
           <div class="card-block__header">
-            <h3 id="alcoholLevelTitle">Настрой вечеринки</h3>
-            <p class="muted">Насколько бодра твоя кружка?</p>
+            <h3 id="nameTitle">Кто отвечает?</h3>
+            <p class="muted">Ник или имя — лишь бы друзья поняли</p>
           </div>
-          <div class="slider-block">
-            <label class="slider-label" for="alcoholLevel">Уровень: <span id="alcoholLevelLabel">Тёплый чок</span></label>
-            <input type="range" id="alcoholLevel" min="0" max="3" value="2" step="1">
-            <div class="slider-notes">
-              <span>0 – Без алкоголя</span>
-              <span>1 – Легко</span>
-              <span>2 – Нормально</span>
-              <span>3 – От души</span>
+          <input id="nameInput" type="text" placeholder="например, Лис Фрости" required>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-next-step>Дальше</button>
+          <p class="muted" id="formStatus" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="form-step hidden" data-step="2">
+        <div class="grid two-col">
+          <div class="card-block" aria-labelledby="foodTitle">
+            <div class="card-block__header">
+              <h3 id="foodTitle">Еда</h3>
+              <p class="muted">Выбери одну или несколько</p>
+            </div>
+            <div class="chip-grid" id="foodOptions">
+              <button class="chip" data-value="Салат Оливье">🥗 Салат Оливье</button>
+              <button class="chip" data-value="Шашлык / BBQ">🔥 Шашлык / BBQ</button>
+              <button class="chip" data-value="Роллы / Суши">🍣 Роллы / Суши</button>
+              <button class="chip" data-value="Снеки и фингерфуд">🧀 Снеки и фингерфуд</button>
+              <button class="chip" data-value="Домашняя выпечка">🍪 Домашняя выпечка</button>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="card-block" aria-labelledby="nameTitle">
-        <div class="card-block__header">
-          <h3 id="nameTitle">Кто отвечает?</h3>
-          <p class="muted">Ник или имя — лишь бы друзья поняли</p>
+        <div class="actions">
+          <button class="btn" data-prev-step>Назад</button>
+          <button class="btn primary" data-next-step>Дальше</button>
+          <p class="muted" id="formStatusStep2" role="status" aria-live="polite"></p>
         </div>
-        <input id="nameInput" type="text" placeholder="например, Лис Фрости" required>
       </div>
 
-      <div class="actions">
-        <button class="btn primary" id="submitBtn">Отправить</button>
-        <p class="muted" id="formStatus" role="status" aria-live="polite"></p>
+      <div class="form-step hidden" data-step="3">
+        <div class="grid two-col">
+          <div class="card-block" aria-labelledby="alcoholLevelTitle">
+            <div class="card-block__header">
+              <h3 id="alcoholLevelTitle">Настрой вечеринки</h3>
+              <p class="muted">Насколько бодра твоя кружка?</p>
+            </div>
+            <div class="slider-block">
+              <label class="slider-label" for="alcoholLevel">Уровень: <span id="alcoholLevelLabel">Тёплый чок</span></label>
+              <input type="range" id="alcoholLevel" min="0" max="3" value="2" step="1">
+              <div class="slider-notes">
+                <span>0 – Без алкоголя</span>
+                <span>1 – Легко</span>
+                <span>2 – Нормально</span>
+                <span>3 – От души</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" data-prev-step>Назад</button>
+          <button class="btn primary" id="submitBtn">Отправить</button>
+          <p class="muted" id="formStatusStep3" role="status" aria-live="polite"></p>
+        </div>
       </div>
     </section>
 

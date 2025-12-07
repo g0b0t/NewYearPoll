@@ -1,4 +1,4 @@
-const SHEET_ID = '';
+const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';
 const SHEET_NAME = 'Responses';
 
 function doPost(e) {

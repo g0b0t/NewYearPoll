@@ -10,6 +10,8 @@ const submitBtn = document.getElementById('submitBtn');
 const backToSurveyBtn = document.getElementById('backToSurvey');
 const backToMainBtn = document.getElementById('backToMain');
 const formStatus = document.getElementById('formStatus');
+const formStatusStep2 = document.getElementById('formStatusStep2');
+const formStatusStep3 = document.getElementById('formStatusStep3');
 const nameInput = document.getElementById('nameInput');
 const alcoholLevel = document.getElementById('alcoholLevel');
 const alcoholLevelLabel = document.getElementById('alcoholLevelLabel');
@@ -18,6 +20,18 @@ const personaDescription = document.getElementById('personaDescription');
 const adminStatus = document.getElementById('adminStatus');
 const foodStats = document.getElementById('foodStats');
 const vibeStats = document.getElementById('vibeStats');
+const stepIndicator = document.getElementById('stepIndicator');
+const stepperItems = document.querySelectorAll('.stepper__item');
+const formSteps = document.querySelectorAll('.form-step');
+
+const statusByStep = {
+  1: formStatus,
+  2: formStatusStep2,
+  3: formStatusStep3
+};
+
+let currentStep = 1;
+const totalSteps = formSteps.length;
 
 const selectableGroups = {
   food: document.querySelectorAll('#foodOptions .chip')
@@ -84,17 +98,66 @@ function setScreen(screen) {
   if (screen === 'admin') adminSection.classList.remove('hidden');
 }
 
+function clearStatuses() {
+  Object.values(statusByStep).forEach(el => {
+    if (el) el.textContent = '';
+  });
+}
+
+function updateStepUI() {
+  formSteps.forEach(step => {
+    const isActive = Number(step.dataset.step) === currentStep;
+    step.classList.toggle('hidden', !isActive);
+  });
+
+  stepperItems.forEach(item => {
+    const stepNumber = Number(item.dataset.step);
+    item.classList.toggle('active', stepNumber === currentStep);
+    item.classList.toggle('completed', stepNumber < currentStep);
+  });
+
+  if (stepIndicator) {
+    stepIndicator.textContent = `Шаг ${currentStep} из ${totalSteps}`;
+  }
+}
+
+function showStatus(step, message) {
+  clearStatuses();
+  const target = statusByStep[step];
+  if (target) target.textContent = message;
+}
+
+function validateStep(step) {
+  if (step === 1 && !nameInput.value.trim()) {
+    showStatus(1, 'Добавь ник или имя.');
+    return false;
+  }
+
+  if (step === 2) {
+    const selectedFoods = getSelectedValues(selectableGroups.food);
+    if (selectedFoods.length === 0) {
+      showStatus(2, 'Выбери хотя бы одну закуску, чтобы застолбить место.');
+      return false;
+    }
+  }
+
+  showStatus(step, '');
+  return true;
+}
+
+function goToStep(step) {
+  currentStep = Math.min(Math.max(step, 1), totalSteps);
+  updateStepUI();
+}
+
 function validateForm() {
-  const selectedFoods = getSelectedValues(selectableGroups.food);
-  if (!nameInput.value.trim()) {
-    formStatus.textContent = 'Добавь ник или имя.';
-    return false;
+  const requiredSteps = [1, 2];
+  for (const step of requiredSteps) {
+    if (!validateStep(step)) {
+      goToStep(step);
+      return false;
+    }
   }
-  if (selectedFoods.length === 0) {
-    formStatus.textContent = 'Выбери хотя бы одну закуску, чтобы застолбить место.';
-    return false;
-  }
-  formStatus.textContent = '';
   return true;
 }
 
@@ -108,7 +171,7 @@ async function submitForm() {
     timestamp: new Date().toISOString()
   };
 
-  formStatus.textContent = 'Отправляем твои пожелания...';
+  showStatus(3, 'Отправляем твои пожелания...');
   submitBtn.disabled = true;
 
   try {
@@ -124,10 +187,10 @@ async function submitForm() {
 
     showPersona(payload);
     setScreen('result');
-    formStatus.textContent = '';
+    showStatus(3, '');
   } catch (error) {
     console.error(error);
-    formStatus.textContent = 'Упс! Не удалось отправить форму. Попробуй ещё раз.';
+    showStatus(3, 'Упс! Не удалось отправить форму. Попробуй ещё раз.');
   } finally {
     submitBtn.disabled = false;
   }
@@ -204,25 +267,52 @@ function handleHashRouting() {
     setScreen('admin');
     loadAdminStats();
   } else {
-    setScreen('survey');
+    setScreen('intro');
   }
 }
 
 function init() {
   updateSliderLabels();
   handleHashRouting();
+  updateStepUI();
 
-  startBtn?.addEventListener('click', () => setScreen('survey'));
-  backToSurveyBtn?.addEventListener('click', () => setScreen('survey'));
+  startBtn?.addEventListener('click', () => {
+    setScreen('survey');
+    goToStep(1);
+    clearStatuses();
+    nameInput?.focus();
+  });
+
+  backToSurveyBtn?.addEventListener('click', () => {
+    setScreen('survey');
+    goToStep(1);
+    clearStatuses();
+  });
+
   backToMainBtn?.addEventListener('click', () => {
     location.hash = '';
-    setScreen('survey');
+    setScreen('intro');
   });
   submitBtn?.addEventListener('click', submitForm);
 
   alcoholLevel.addEventListener('input', updateSliderLabels);
 
   selectableGroups.food.forEach(btn => btn.addEventListener('click', toggleCard));
+
+  document.querySelectorAll('[data-next-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (validateStep(currentStep)) {
+        goToStep(currentStep + 1);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-prev-step]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      goToStep(currentStep - 1);
+      clearStatuses();
+    });
+  });
 
   window.addEventListener('hashchange', handleHashRouting);
 }
