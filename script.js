@@ -1,5 +1,5 @@
 // Configuration
-const API_URL = 'https://script.google.com/macros/s/AKfycbxifiDuwg7vqVT7pSzQpZRLYS0hpi-4Pb4Uveer7TvpmiJTTpfj2fmEL3FcGLrER49zug/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyiMuKxEFG2r-_JzJbXIazsV7xq9omQ48sPwtJHFWuLoF79Ephf8B8SUmoPRVdWOXU8rA/exec';
 
 // Elements
 const surveySection = document.getElementById('survey');
@@ -177,7 +177,10 @@ async function submitForm() {
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      redirect: 'follow',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
       body: JSON.stringify(payload)
     });
 

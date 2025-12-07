@@ -2,7 +2,8 @@ const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';
 const SHEET_NAME = 'Responses';
 
 function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
+  const data = JSON.parse(e.parameter.data || '{}');
+
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME) ||
     SpreadsheetApp.openById(SHEET_ID).insertSheet(SHEET_NAME);
 
@@ -50,8 +51,5 @@ function doOptions() {
 function buildJsonResponse(payload) {
   return ContentService
     .createTextOutput(JSON.stringify(payload))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    .setMimeType(ContentService.MimeType.JSON);
 }
