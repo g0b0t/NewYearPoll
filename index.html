@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Новый год: опрос про еду</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="hero__eyebrow">Новый год · наша компания 10–12 друзей</p>
+      <h1>Доска закусок и настроений</h1>
+      <p class="hero__tagline">Отметь любимые закуски, подвигай ползунок настроения и получи смешное прозвище.</p>
+      <div class="hero__actions">
+        <button class="btn primary" id="startBtn">Поехали</button>
+        <a class="btn ghost" href="#admin">Смотреть выбор команды</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="survey" class="panel hidden" aria-labelledby="surveyTitle">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Шаг 1</p>
+          <h2 id="surveyTitle">Выбери закуски</h2>
+          <p class="muted">Нажми на пару карточек. Это только для своей компании, так что не слишком серьёзно.</p>
+        </div>
+      </div>
+
+      <div class="grid two-col">
+        <div class="card-block" aria-labelledby="foodTitle">
+          <div class="card-block__header">
+            <h3 id="foodTitle">Еда</h3>
+            <p class="muted">Выбери одну или несколько</p>
+          </div>
+          <div class="chip-grid" id="foodOptions">
+            <button class="chip" data-value="Салат Оливье">🥗 Салат Оливье</button>
+            <button class="chip" data-value="Шашлык / BBQ">🔥 Шашлык / BBQ</button>
+            <button class="chip" data-value="Роллы / Суши">🍣 Роллы / Суши</button>
+            <button class="chip" data-value="Снеки и фингерфуд">🧀 Снеки и фингерфуд</button>
+            <button class="chip" data-value="Домашняя выпечка">🍪 Домашняя выпечка</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid two-col">
+        <div class="card-block" aria-labelledby="alcoholLevelTitle">
+          <div class="card-block__header">
+            <h3 id="alcoholLevelTitle">Настрой вечеринки</h3>
+            <p class="muted">Насколько бодра твоя кружка?</p>
+          </div>
+          <div class="slider-block">
+            <label class="slider-label" for="alcoholLevel">Уровень: <span id="alcoholLevelLabel">Тёплый чок</span></label>
+            <input type="range" id="alcoholLevel" min="0" max="3" value="2" step="1">
+            <div class="slider-notes">
+              <span>0 – Без алкоголя</span>
+              <span>1 – Легко</span>
+              <span>2 – Нормально</span>
+              <span>3 – От души</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-block" aria-labelledby="nameTitle">
+        <div class="card-block__header">
+          <h3 id="nameTitle">Кто отвечает?</h3>
+          <p class="muted">Ник или имя — лишь бы друзья поняли</p>
+        </div>
+        <input id="nameInput" type="text" placeholder="например, Лис Фрости" required>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="submitBtn">Отправить</button>
+        <p class="muted" id="formStatus" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="result" class="panel hidden" aria-live="polite">
+      <div class="result-card">
+        <p class="eyebrow">Ты...</p>
+        <h2 id="personaTitle">Праздничный герой</h2>
+        <p id="personaDescription" class="muted">Твои выборы легендарны. Спасибо, что поделился предпочтениями!</p>
+        <button class="btn" id="backToSurvey">Вернуться к форме</button>
+      </div>
+    </section>
+
+    <section id="admin" class="panel hidden" aria-labelledby="adminTitle">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Вид для организатора</p>
+          <h2 id="adminTitle">Живая доска закусок</h2>
+          <p class="muted">Общий выбор нашей уютной компании.</p>
+        </div>
+        <button class="btn" id="backToMain">Назад к форме</button>
+      </div>
+
+      <div id="adminStatus" class="muted" role="status" aria-live="polite"></div>
+
+      <div class="stats-grid">
+        <div>
+          <h3>Еда</h3>
+          <div id="foodStats" class="stat-list"></div>
+        </div>
+        <div>
+          <h3>Настрой вечеринки</h3>
+          <div id="vibeStats" class="stat-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Сделано для нашей новогодней тусовки · GitHub Pages · Google Apps Script</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
